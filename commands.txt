@@ -1,0 +1,28 @@
+sudo jps
+
+hadoop fs –help
+
+list of files:
+hadoop fs –ls
+
+Create directory:
+hadoop fs –mkdir /user/cloudera/501
+
+Display disk usage of current hadoop distributed file system:
+hadoop fs –df
+
+create a file into hadoop:
+hadoop fs –touchz /user/cloudera/501/Sample1.txt
+
+Copy from Local (/home/cloudera/): bda2.txt
+hadoop fs -copyFromLocal bda2.txt /user/cloudera/cse/
+
+To Know the files and Dirs:
+hadoop fs -ls -R
+
+To Know disk usage of files under any Dir:
+hadoop fs -du /user/cloudera/cse
+
+
+
+

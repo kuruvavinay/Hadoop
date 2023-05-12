@@ -1,0 +1,76 @@
+Step 1. Create a table in hive
+hive> create table hiveword (comments string);
+
+Step 2. Load data from the sample file
+hive> load data local inpath '/home/cloudera/Desktop/hiveword.txt' into table hiveword;
+
+
+Step 3. Convert comments into an array of strings
+hive> select split (comments, ' ') from hiveword;
+OK
+["This","is","BDA","LAB"]
+["WE","ARE","WORKING","IN","HIVE",""]
+["BDA","LAB"]
+Time taken: 0.099 seconds, Fetched: 3 row(s)
+
+
+Step 4. Use table generation udf
+//Now time to return multiple row from the above array of string, and for that we have built in table generation UDTF explode function.//
+hive> select explode(split(comments, ' ')) from hiveword;
+OK
+This
+is
+BDA
+LAB
+WE
+ARE
+WORKING
+IN
+HIVE
+
+BDA
+LAB
+Time taken: 0.104 seconds, Fetched: 12 row(s)
+
+Step 5 final step
+hive> SELECT word,count(*) from (select explode(split(comments, ' ')) as word from hiveword) w
+    > GROUP BY word;
+
+Output:
+
+Query ID = cloudera_20230503074242_3bdf4293-17b4-4798-bd4f-ae5588c40bc4
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1683122816047_0001, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1683122816047_0001/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1683122816047_0001
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-05-03 07:42:37,655 Stage-1 map = 0%,  reduce = 0%
+2023-05-03 07:42:57,664 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.14 sec
+2023-05-03 07:43:18,077 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 6.36 sec
+MapReduce Total cumulative CPU time: 6 seconds 360 msec
+Ended Job = job_1683122816047_0001
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 6.36 sec   HDFS Read: 8386 HDFS Write: 60 SUCCESS
+Total MapReduce CPU Time Spent: 6 seconds 360 msec
+OK
+	1
+ARE	1
+BDA	2
+HIVE	1
+IN	1
+LAB	2
+This	1
+WE	1
+WORKING	1
+is	1
+Time taken: 76.882 seconds, Fetched: 10 row(s)
+
+
+

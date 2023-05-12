@@ -1,0 +1,159 @@
+[cloudera@quickstart ~]$ hive
+
+Logging initialized using configuration in file:/etc/hive/conf.dist/hive-log4j.properties
+WARNING: Hive CLI is deprecated and migration to Beeline is recommended.
+hive> create database emp;
+OK
+Time taken: 4.585 seconds
+hive> use emp;
+
+hive> create database emp1_details;
+OK
+Time taken: 0.11 seconds
+
+hive> use emp1_details;
+OK
+Time taken: 0.03 seconds
+
+hive> create table emp1(empno int, ename string)row format delimited fields terminated by ',';
+OK
+Time taken: 0.127 seconds
+
+hive> DESCRIBE emp1;
+OK
+empno               	int                 	                    
+ename               	string              	                    
+Time taken: 0.114 seconds, Fetched: 2 row(s)
+
+
+hive> describe formatted emp1;
+OK
+# col_name            	data_type           	comment             
+	 	 
+empno               	int                 	                    
+ename               	string              	                    
+	 	 
+# Detailed Table Information	 	 
+Database:           	emp1_details        	 
+Owner:              	cloudera            	 
+CreateTime:         	Mon May 01 09:01:14 PDT 2023	 
+LastAccessTime:     	UNKNOWN             	 
+Protect Mode:       	None                	 
+Retention:          	0                   	 
+Location:           	hdfs://quickstart.cloudera:8020/user/hive/warehouse/emp1_details.db/emp1	 
+Table Type:         	MANAGED_TABLE       	 
+Table Parameters:	 	 
+	transient_lastDdlTime	1682956874          
+	 	 
+# Storage Information	 	 
+SerDe Library:      	org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe	 
+InputFormat:        	org.apache.hadoop.mapred.TextInputFormat	 
+OutputFormat:       	org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat	 
+Compressed:         	No                  	 
+Num Buckets:        	-1                  	 
+Bucket Columns:     	[]                  	 
+Sort Columns:       	[]                  	 
+Storage Desc Params:	 	 
+	field.delim         	,                   
+	serialization.format	,                   
+Time taken: 0.17 seconds, Fetched: 28 row(s)
+
+
+hive> load data local inpath '/home/cloudera/Desktop/empdetails.txt' overwrite into table emp1;
+Loading data to table emp1_details.emp1
+Table emp1_details.emp1 stats: [numFiles=1, numRows=0, totalSize=17, rawDataSize=0]
+OK
+Time taken: 1.061 seconds
+
+
+hive> select ename from emp1;
+OK
+ hari
+ kumar
+Time taken: 0.099 seconds, Fetched: 2 row(s)
+
+
+hive> select * from emp1;
+OK
+1	 hari
+2	 kumar
+Time taken: 0.153 seconds, Fetched: 2 row(s)
+
+hive> select count(1) from emp1;
+Query ID = cloudera_20230501091919_faed755b-0e34-4595-a807-87e9b1728273
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682955327000_0001, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1682955327000_0001/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1682955327000_0001
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-05-01 09:19:41,991 Stage-1 map = 0%,  reduce = 0%
+2023-05-01 09:20:04,094 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.56 sec
+2023-05-01 09:20:24,765 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 6.08 sec
+MapReduce Total cumulative CPU time: 6 seconds 80 msec
+Ended Job = job_1682955327000_0001
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 6.08 sec   HDFS Read: 7424 HDFS Write: 2 SUCCESS
+Total MapReduce CPU Time Spent: 6 seconds 80 msec
+OK
+2
+
+Time taken: 77.493 seconds, Fetched: 1 row(s)
+
+
+
+hive> select ename from emp1 where ename LIKE '_';
+OK
+Time taken: 0.168 seconds
+
+hive> select ename from emp1 where ename LIKE 'h%';
+OK
+Time taken: 0.125 seconds
+
+hive> select * from emp1 where ename LIKE 'h%';
+OK
+Time taken: 0.096 seconds
+
+hive> show tables;
+OK
+emp1
+Time taken: 0.075 seconds, Fetched: 1 row(s)
+
+
+hive> alter table emp1 rename to emp2;
+OK
+Time taken: 0.225 seconds
+
+hive> select sum(empno) from emp2;
+Query ID = cloudera_20230501093535_a06adcc7-951b-4263-9143-9e5f49421739
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1682955327000_0002, Tracking URL = http://quickstart.cloudera:8088/proxy/application_1682955327000_0002/
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -kill job_1682955327000_0002
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2023-05-01 09:35:24,990 Stage-1 map = 0%,  reduce = 0%
+2023-05-01 09:35:45,436 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 2.67 sec
+2023-05-01 09:36:06,099 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 5.94 sec
+MapReduce Total cumulative CPU time: 5 seconds 940 msec
+Ended Job = job_1682955327000_0002
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 5.94 sec   HDFS Read: 7434 HDFS Write: 2 SUCCESS
+Total MapReduce CPU Time Spent: 5 seconds 940 msec
+OK
+3
+Time taken: 64.736 seconds, Fetched: 1 row(s)
+hive> 
+

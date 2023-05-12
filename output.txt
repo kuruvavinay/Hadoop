@@ -1,0 +1,50 @@
+[cloudera@quickstart ~]$ cat *.txt | python mapper.py
+0	0	0	7
+0	1	0	7
+0	0	1	8
+0	1	1	8
+0	0	0	9
+0	1	0	9
+0	0	1	10
+0	1	1	10
+0	0	0	11
+0	1	0	11
+0	0	1	12
+0	1	1	12
+0	0	0	7
+0	1	0	7
+0	0	1	8
+0	1	1	8
+0	0	0	9
+0	1	0	9
+0	0	1	10
+0	1	1	10
+0	0	0	11
+0	1	0	11
+0	0	1	12
+0	1	1	12
+0	0	0	1
+0	1	0	1
+0	0	1	2
+0	1	1	2
+0	0	2	3
+0	1	2	3
+0	0	0	4
+0	1	0	4
+0	0	1	5
+0	1	1	5
+0	0	2	6
+0	1	2	6
+
+[cloudera@quickstart ~]$ chmod 777 mapper.py reducer.py
+
+[cloudera@quickstart ~]$ hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
+> -input /user/cloudera/matrices/ \
+> -output /user/cloudera/mat_output \
+> -mapper ~/Desktop/mr/matrix-mul/Mapper.py \
+> -reducer ~/Desktop/mr/matrix-mul/Reducer.py
+
+process view the output
+[cloudera@quickstart ~]$ hdfs dfs -cat /user/cloudera/mat_output/*
+[14, 245]
+[313, 77]
